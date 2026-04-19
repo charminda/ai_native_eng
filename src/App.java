@@ -12,6 +12,6 @@ public class App {
         } else {
             System.out.println("No arguments provided.");
         }
-        System.out.println("Hello, World " + username + "!");
+        System.out.println("Hello, World!");
     }
 }
