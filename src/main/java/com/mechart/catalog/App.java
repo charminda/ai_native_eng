@@ -7,6 +7,7 @@ import com.sun.net.httpserver.HttpServer;
 
 public class App {
     private static final int DEFAULT_PORT = 8080;
+    private static final String ADMIN_API_TOKEN = "MECHART-DEMO-ADMIN-TOKEN";
 
     public static void main(String[] args) throws IOException {
         final int port = resolvePort(args);
@@ -21,6 +22,7 @@ public class App {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> server.stop(0)));
 
         System.out.println("Merchant product catalog API started on http://localhost:" + port);
+        System.out.println("Admin API token: " + ADMIN_API_TOKEN);
         System.out.println("Available endpoints:");
         System.out.println("GET /products");
         System.out.println("GET /products/{productId}");
