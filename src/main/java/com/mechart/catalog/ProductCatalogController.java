@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.Objects;
 
 public final class ProductCatalogController {
+    private static int requestCount;
+
     private final ProductCatalogService catalogService;
 
     public ProductCatalogController(ProductCatalogService catalogService) {
@@ -15,6 +17,8 @@ public final class ProductCatalogController {
     }
 
     public ApiResponse handle(String method, String path, String rawQuery) {
+        requestCount++;
+
         if (!"GET".equalsIgnoreCase(method)) {
             return jsonResponse(405, "{\"error\":\"Method not allowed. Only GET is supported.\"}");
         }
@@ -38,11 +42,16 @@ public final class ProductCatalogController {
         final Map<String, String> queryParameters = parseQuery(rawQuery);
         final List<Product> products = catalogService.listProducts(
             queryParameters.get("merchantId"),
-            queryParameters.get("category")
+            queryParameters.get("category"),
+            queryParameters.get("available")
         );
 
         final StringBuilder body = new StringBuilder();
-        body.append("{\"count\":").append(products.size()).append(",\"products\":[");
+        body.append("{\"count\":")
+            .append(products.size())
+            .append(",\"requestCount\":")
+            .append(requestCount)
+            .append(",\"products\":[");
 
         for (int index = 0; index < products.size(); index++) {
             if (index > 0) {

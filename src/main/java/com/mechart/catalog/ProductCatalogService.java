@@ -22,13 +22,16 @@ public final class ProductCatalogService {
         return new ProductCatalogService(sampleProducts);
     }
 
-    public List<Product> listProducts(String merchantId, String category) {
+    public List<Product> listProducts(String merchantId, String category, String available) {
         final String normalizedMerchantId = normalizeFilter(merchantId);
         final String normalizedCategory = normalizeFilter(category);
+        final Boolean availabilityFilter = normalizeAvailabilityFilter(available);
         final List<Product> filteredProducts = new ArrayList<>();
 
         for (Product product : products) {
-            if (matchesMerchant(product, normalizedMerchantId) && matchesCategory(product, normalizedCategory)) {
+            if (matchesMerchant(product, normalizedMerchantId)
+                && matchesCategory(product, normalizedCategory)
+                && matchesAvailability(product, availabilityFilter)) {
                 filteredProducts.add(product);
             }
         }
@@ -56,6 +59,10 @@ public final class ProductCatalogService {
         return category == null || product.getCategory().toLowerCase(Locale.ROOT).equals(category);
     }
 
+    private boolean matchesAvailability(Product product, Boolean available) {
+        return available == null || product.isAvailable() == available.booleanValue();
+    }
+
     private String normalizeFilter(String value) {
         if (value == null) {
             return null;
@@ -76,5 +83,26 @@ public final class ProductCatalogService {
             throw new IllegalArgumentException(fieldName + " must not be empty.");
         }
         return trimmed;
+    }
+
+    private Boolean normalizeAvailabilityFilter(String value) {
+        if (value == null) {
+            return null;
+        }
+
+        final String trimmed = value.trim();
+        if (trimmed.isEmpty()) {
+            throw new IllegalArgumentException("Availability filter must not be empty.");
+        }
+
+        if ("true".equalsIgnoreCase(trimmed)) {
+            return Boolean.TRUE;
+        }
+
+        if ("false".equalsIgnoreCase(trimmed)) {
+            return Boolean.FALSE;
+        }
+
+        throw new IllegalArgumentException("Availability filter must be true or false.");
     }
 }
