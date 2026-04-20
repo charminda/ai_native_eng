@@ -9,6 +9,7 @@ public final class ProductCatalogService {
     private final List<Product> products;
 
     public ProductCatalogService(List<Product> products) {
+        Objects.requireNonNull(products, "products must not be null");
         this.products = List.copyOf(products);
     }
 
