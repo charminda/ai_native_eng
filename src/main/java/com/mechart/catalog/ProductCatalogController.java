@@ -5,12 +5,13 @@ import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public final class ProductCatalogController {
     private final ProductCatalogService catalogService;
 
     public ProductCatalogController(ProductCatalogService catalogService) {
-        this.catalogService = catalogService;
+        this.catalogService = Objects.requireNonNull(catalogService, "catalogService must not be null");
     }
 
     public ApiResponse handle(String method, String path, String rawQuery) {
